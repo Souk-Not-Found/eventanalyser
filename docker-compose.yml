@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: event-analytics-db
+    environment:
+      POSTGRES_DB: analytics_db
+      POSTGRES_USER: analytics_user
+      POSTGRES_PASSWORD: anasbentalouba
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U analytics_user -d analytics_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - analytics-network
+
+  # Event Analytics Application
+  app:
+    build: .
+    container_name: event-analytics-app
+    ports:
+      - "5003:5003"
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=production
+      - SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://analytics_user:anasbentalouba@postgres:5432/analytics_db
+      - EUREKA_SERVER_URL=http://localhost:8761/eureka
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - analytics-network
+    restart: unless-stopped
+
+  # Optional: Eureka Server (if you want to run it locally)
+  # eureka:
+  #   image: springcloud/eureka:latest
+  #   container_name: eureka-server
+  #   ports:
+  #     - "8761:8761"
+  #   networks:
+  #     - analytics-network
+
+volumes:
+  postgres_data:
+
+networks:
+  analytics-network:
+    driver: bridge 
