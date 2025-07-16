@@ -1,0 +1,118 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Event Management</h2>
+  
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+          <h5>Search Events</h5>
+        </div>
+        <div class="card-body">
+          <div class="form-group mb-3">
+            <input [(ngModel)]="searchKeyword" placeholder="Search by title" class="form-control" />
+          </div>
+          <button (click)="searchEvents()" class="btn btn-primary">Search</button>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+          <h5>Filter Events</h5>
+        </div>
+        <div class="card-body">
+          <div class="form-group mb-3">
+            <input [(ngModel)]="categorySearch" placeholder="Filter by category" class="form-control" />
+            <button (click)="filterByCategory()" class="btn btn-info mt-2">Filter Category</button>
+          </div>
+          <div class="form-group">
+            <input [(ngModel)]="locationSearch" placeholder="Filter by location" class="form-control" />
+            <button (click)="filterByLocation()" class="btn btn-info mt-2">Filter Location</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+          <h5>Create New Event</h5>
+        </div>
+        <div class="card-body">
+          <div class="form-group mb-2">
+            <input [(ngModel)]="newEvent.title" placeholder="Title" class="form-control" />
+          </div>
+          <div class="form-group mb-2">
+            <textarea [(ngModel)]="newEvent.description" placeholder="Description" class="form-control"></textarea>
+          </div>
+          <div class="form-group mb-2">
+            <input [(ngModel)]="newEvent.category" placeholder="Category" class="form-control" />
+          </div>
+          <div class="form-group mb-3">
+            <input [(ngModel)]="newEvent.location" placeholder="Location" class="form-control" />
+          </div>
+          <button (click)="createEvent()" class="btn btn-success">Create Event</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header bg-secondary text-white">
+      <h5>All Events</h5>
+    </div>
+    <div class="card-body">
+      <div class="list-group">
+        <a *ngFor="let event of events" 
+           href="javascript:void(0)" 
+           class="list-group-item list-group-item-action"
+           (click)="showEventDetails(event)">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ event.title }}</h5>
+            <small>Popularity: {{ event.popularity_score | number:'1.1-1' }}</small>
+          </div>
+          <p class="mb-1">{{ event.description }}</p>
+          <small>{{ event.category }} • {{ event.location }}</small>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="selectedEvent" class="modal fade show" style="display: block; background: rgba(0,0,0,0.5)">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ selectedEvent.title }}</h5>
+          <button type="button" class="btn-close" (click)="selectedEvent = null"></button>
+        </div>
+        <div class="modal-body">
+          <p>{{ selectedEvent.description }}</p>
+          <p><strong>Category:</strong> {{ selectedEvent.category }}</p>
+          <p><strong>Location:</strong> {{ selectedEvent.location }}</p>
+          <p><strong>Popularity:</strong> {{ selectedEvent.popularity_score | number:'1.1-1' }}</p>
+        </div>
+        <div class="modal-footer">
+          <button (click)="selectedEvent = null" class="btn btn-secondary">Close</button>
+          <button (click)="deleteEvent(selectedEvent.id!)" class="btn btn-danger">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="categoryFilteredEvents.length > 0" class="mt-4">
+    <h4>Category Filter Results</h4>
+    <div class="list-group">
+      <a *ngFor="let event of categoryFilteredEvents" class="list-group-item">
+        {{ event.title }} - {{ event.category }}
+      </a>
+    </div>
+  </div>
+
+  <div *ngIf="locationFilteredEvents.length > 0" class="mt-4">
+    <h4>Location Filter Results</h4>
+    <div class="list-group">
+      <a *ngFor="let event of locationFilteredEvents" class="list-group-item">
+        {{ event.title }} - {{ event.location }}
+      </a>
+    </div>
+  </div>
+</div>

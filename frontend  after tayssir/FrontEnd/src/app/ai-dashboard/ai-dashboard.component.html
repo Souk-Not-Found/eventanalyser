@@ -1,0 +1,113 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+          <h5>Search Filters</h5>
+        </div>
+        <div class="card-body">
+          <div class="form-group mb-3">
+            <label for="category">Category</label>
+            <input type="text" class="form-control" id="category" 
+                   [(ngModel)]="category" placeholder="e.g. Music, Sports">
+          </div>
+          <div class="form-group mb-3">
+            <label for="location">Location</label>
+            <input type="text" class="form-control" id="location" 
+                   [(ngModel)]="location" placeholder="e.g. New York, Paris">
+          </div>
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary" (click)="onSearch()">
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm"></span>
+              Search
+            </button>
+            <button class="btn btn-outline-secondary" (click)="clearFilters()">
+              Clear Filters
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header bg-warning text-white">
+          <h5>Popular Events</h5>
+        </div>
+        <div class="card-body">
+          <div class="list-group">
+            <a *ngFor="let event of popularEvents" 
+               href="javascript:void(0)" 
+               class="list-group-item list-group-item-action"
+               (click)="onEventSelect(event)">
+              <h6>{{ event.title }}</h6>
+              <small class="text-muted">{{ event.category }} • {{ event.location }}</small>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+      <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+          <h5>AI Recommendations</h5>
+        </div>
+        <div class="card-body">
+          <div *ngIf="isLoading && !recommendations.length" class="text-center">
+            <div class="spinner-border text-primary"></div>
+            <p>Loading recommendations...</p>
+          </div>
+          
+          <div *ngIf="!isLoading && recommendations.length === 0" class="alert alert-warning">
+            No recommendations found. Try different search criteria.
+          </div>
+
+          <div class="list-group">
+            <a *ngFor="let event of recommendations" 
+               href="javascript:void(0)" 
+               class="list-group-item list-group-item-action"
+               [class.active]="selectedEvent?.id === event.id"
+               (click)="onEventSelect(event)">
+              <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ event.title }}</h5>
+                <small>{{ event.category }}</small>
+              </div>
+              <p class="mb-1">{{ event.description }}</p>
+              <small>{{ event.location }} • Popularity: {{ event.popularity_score | number:'1.1-1' }}</small>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="showSimilarEvents" class="card">
+        <div class="card-header bg-success text-white">
+          <h5>Similar Events</h5>
+        </div>
+        <div class="card-body">
+          <div *ngIf="isLoading && !similarEvents.length" class="text-center">
+            <div class="spinner-border text-primary"></div>
+            <p>Finding similar events...</p>
+          </div>
+          
+          <div *ngIf="!isLoading && similarEvents.length === 0" class="alert alert-warning">
+            No similar events found for the selected event.
+          </div>
+
+          <div class="list-group">
+            <a *ngFor="let event of similarEvents" 
+               href="javascript:void(0)" 
+               class="list-group-item list-group-item-action">
+              <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ event.title }}</h5>
+                <small>{{ event.category }}</small>
+              </div>
+              <p class="mb-1">{{ event.description }}</p>
+              <small>{{ event.location }} • Popularity: {{ event.popularity_score | number:'1.1-1' }}</small>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

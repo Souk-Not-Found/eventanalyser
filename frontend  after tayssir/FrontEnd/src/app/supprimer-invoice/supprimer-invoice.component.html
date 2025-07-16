@@ -1,0 +1,23 @@
+<div style="display: flex; gap: 32px; align-items: flex-start;">
+  <div class="invoice-list">
+    <h3>Factures</h3>
+    <ul *ngIf="invoices.length; else noInvoices">
+      <li *ngFor="let inv of invoices">
+        <div><strong>#{{ inv.invoiceNumber }}</strong></div>
+        <div>ID: {{ inv.id }}</div>
+        <div>Montant: {{ inv.amount }} €</div>
+        <div>Date: {{ inv.issuedAt | date:'short' }}</div>
+      </li>
+    </ul>
+    <ng-template #noInvoices>
+      <div>Aucune facture trouvée.</div>
+    </ng-template>
+  </div>
+
+  <div class="delete-container">
+    <h2>Supprimer une facture</h2>
+    <input type="number" [(ngModel)]="invoiceId" placeholder="ID de la facture">
+    <button (click)="supprimerFacture()">🗑️ Supprimer</button>
+    <p *ngIf="message">{{ message }}</p>
+  </div>
+</div>

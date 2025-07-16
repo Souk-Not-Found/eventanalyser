@@ -1,0 +1,14 @@
+<div class="payment-container">
+  <h2>Secure Payment</h2>
+  <form (submit)="payer(); $event.preventDefault()">
+    <div class="form-group">
+      <label for="card-element">Card Information</label>
+      <div id="card-element" class="card-element"></div>
+    </div>
+    <button type="submit" class="btn">Pay Now</button>
+    <p id="card-errors" class="text-danger mt-2"></p>
+  </form>
+</div>
+
+<button routerLink="/supprimer-facture">🗑️ Aller à la suppression de facture</button>
+

@@ -1,0 +1,35 @@
+<div class="average-rating-chart-container">
+  <mat-card class="chart-section">
+    <div class="section-header">
+      <mat-icon>star_rate</mat-icon>
+      <h2>Organizer Performance: Average Ratings</h2>
+    </div>
+    <mat-divider></mat-divider>
+    <canvas
+      baseChart
+      [data]="pieChartData"
+      [type]="pieChartType"
+      style="max-width: 600px; margin-bottom: 40px; display: block; margin-left: auto; margin-right: auto;">
+    </canvas>
+  </mat-card>
+
+  <mat-card class="chart-section">
+    <div class="section-header">
+      <mat-icon>bar_chart</mat-icon>
+      <h2>Events Organized Each Month</h2>
+    </div>
+    <mat-divider></mat-divider>
+    <ngx-charts-bar-vertical-stacked
+      [results]="stackedChartData"
+      [xAxis]="true"
+      [yAxis]="true"
+      [legend]="true"
+      [showXAxisLabel]="true"
+      [xAxisLabel]="'Month'"
+      [showYAxisLabel]="true"
+      [yAxisLabel]="'Event Count'"
+      [view]="[700,400]"
+      style="display: block; margin-left: auto; margin-right: auto;">
+    </ngx-charts-bar-vertical-stacked>
+  </mat-card>
+</div>

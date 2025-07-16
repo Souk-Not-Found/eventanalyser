@@ -8,7 +8,7 @@ import py_eureka_client.eureka_client as eureka_client
 import os
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=["http://localhost:4200"], supports_credentials=True, methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"], allow_headers=["Content-Type", "Authorization"])
 
 # PostgreSQL configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(

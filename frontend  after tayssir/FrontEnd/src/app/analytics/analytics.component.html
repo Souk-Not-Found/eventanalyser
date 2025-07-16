@@ -1,0 +1,217 @@
+<div class="analytics-container">
+  <mat-card class="main-card">
+    <h2 class="analytics-title">
+      <mat-icon class="analytics-icon">bar_chart</mat-icon>
+      Event Analytics
+    </h2>
+    <mat-divider></mat-divider>
+
+    <!-- Simple Search Section -->
+    <mat-card class="search-section">
+      <div class="search-header">
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Search Events</mat-label>
+          <mat-icon matPrefix>search</mat-icon>
+          <input matInput [(ngModel)]="searchParams.q" placeholder="Search by organizer name..." 
+                 (keyup.enter)="performSearch()">
+          <mat-icon matSuffix (click)="performSearch()" class="search-icon">search</mat-icon>
+        </mat-form-field>
+        
+        <div class="search-actions">
+          <button mat-stroked-button (click)="toggleFilters()" class="filter-toggle">
+            <mat-icon>filter_list</mat-icon>
+            {{ showFilters ? 'Hide' : 'Show' }} Filters
+          </button>
+          <button mat-stroked-button (click)="clearSearch()" class="clear-btn">
+            <mat-icon>clear</mat-icon>
+            Clear All
+          </button>
+        </div>
+      </div>
+
+      <!-- Simple Filter Panel -->
+      <div class="filter-panel" *ngIf="showFilters && filterOptions">
+        <mat-divider></mat-divider>
+        <div class="simple-filters">
+          <!-- Organizer Filter -->
+          <div class="filter-group">
+            <h4>Filter by Organizer</h4>
+            <mat-form-field appearance="outline">
+              <mat-label>Select Organizer</mat-label>
+              <mat-select [(ngModel)]="searchParams.organizer" name="organizer">
+                <mat-option value="">All Organizers</mat-option>
+                <mat-option *ngFor="let org of filterOptions.organizers" [value]="org">
+                  {{ org }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- Sort Options -->
+          <div class="filter-group">
+            <h4>Sort Results</h4>
+            <div class="sort-controls">
+              <mat-form-field appearance="outline">
+                <mat-label>Sort by</mat-label>
+                <mat-select [(ngModel)]="searchParams.sort" name="sort">
+                  <mat-option value="date">Date (Newest First)</mat-option>
+                  <mat-option value="views">Most Views</mat-option>
+                  <mat-option value="bookings">Most Bookings</mat-option>
+                  <mat-option value="rating">Highest Rating</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-actions">
+          <button mat-raised-button color="primary" (click)="performSearch()" [disabled]="isLoading">
+            <mat-icon>search</mat-icon>
+            {{ isLoading ? 'Searching...' : 'Search' }}
+          </button>
+        </div>
+      </div>
+    </mat-card>
+
+    <div class="content-wrapper">
+      <!-- Left side: Form -->
+      <mat-card class="form-section">
+        <form (ngSubmit)="save()" #analyticsForm="ngForm" class="analytics-form">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Event ID</mat-label>
+            <input type="number" matInput [(ngModel)]="currentRecord.event_id" name="event_id" required>
+            <mat-hint>Unique event identifier</mat-hint>
+            <mat-error *ngIf="analyticsForm.submitted && !currentRecord.event_id">Event ID is required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Organizer</mat-label>
+            <input type="text" matInput [(ngModel)]="currentRecord.organizer" name="organizer" required />
+            <mat-hint>Who is organizing?</mat-hint>
+            <mat-error *ngIf="analyticsForm.submitted && !currentRecord.organizer">Organizer is required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Views</mat-label>
+            <input type="number" matInput [(ngModel)]="currentRecord.views" name="views" required>
+            <mat-hint>Total views for this event</mat-hint>
+            <mat-error *ngIf="analyticsForm.submitted && !currentRecord.views">Views are required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Bookings</mat-label>
+            <input type="number" matInput [(ngModel)]="currentRecord.bookings" name="bookings" required>
+            <mat-hint>Number of bookings</mat-hint>
+            <mat-error *ngIf="analyticsForm.submitted && !currentRecord.bookings">Bookings are required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Date</mat-label>
+            <input type="date" matInput [(ngModel)]="currentDateOnly" name="dateOnly" required />
+            <mat-error *ngIf="analyticsForm.submitted && !currentDateOnly">Date is required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Time</mat-label>
+            <input type="time" matInput [(ngModel)]="currentTimeOnly" name="timeOnly" required />
+            <mat-error *ngIf="analyticsForm.submitted && !currentTimeOnly">Time is required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Rating</mat-label>
+            <input type="number" matInput [(ngModel)]="currentRecord.rating" name="rating" min="0" max="5" step="0.1" />
+            <mat-hint>0 to 5 (can use decimals)</mat-hint>
+          </mat-form-field>
+
+          <div class="buttons">
+            <button mat-raised-button color="primary" type="submit" class="big-button">
+              {{ isEditing ? 'Update' : 'Add' }}
+            </button>
+          </div>
+        </form>
+      </mat-card>
+
+      <!-- Right side: Main analytics table -->
+      <mat-card class="table-section">
+        <div class="table-container mat-elevation-z8">
+          <table mat-table [dataSource]="analyticsList" class="analytics-table">
+            <ng-container matColumnDef="event_id">
+              <th mat-header-cell *matHeaderCellDef>Event ID</th>
+              <td mat-cell *matCellDef="let record">{{ record.event_id }}</td>
+            </ng-container>
+            <ng-container matColumnDef="organizer">
+              <th mat-header-cell *matHeaderCellDef>Organizer</th>
+              <td mat-cell *matCellDef="let record">{{ record.organizer }}</td>
+            </ng-container>
+            <ng-container matColumnDef="views">
+              <th mat-header-cell *matHeaderCellDef>Views</th>
+              <td mat-cell *matCellDef="let record">{{ record.views }}</td>
+            </ng-container>
+            <ng-container matColumnDef="bookings">
+              <th mat-header-cell *matHeaderCellDef>Bookings</th>
+              <td mat-cell *matCellDef="let record">{{ record.bookings }}</td>
+            </ng-container>
+            <ng-container matColumnDef="date">
+              <th mat-header-cell *matHeaderCellDef>Date</th>
+              <td mat-cell *matCellDef="let record">{{ record.date | date:'dd/MM/yy, h:mm a' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="rating">
+              <th mat-header-cell *matHeaderCellDef>Rating</th>
+              <td mat-cell *matCellDef="let record">
+                <span [ngClass]="{'high-rating': record.rating >= 4, 'low-rating': record.rating < 2}">
+                  {{ record.rating }}
+                </span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let record">
+                <button mat-icon-button color="primary" aria-label="Edit" (click)="edit(record)" matTooltip="Edit this record">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" aria-label="Delete" (click)="delete(record.id!)" matTooltip="Delete this record">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+
+          <!-- Pagination -->
+          <mat-paginator [length]="pagination.total"
+                        [pageSize]="pagination.limit"
+                        [pageIndex]="pagination.page - 1"
+                        [pageSizeOptions]="[10, 20, 50, 100]"
+                        (page)="onPageChange($event)"
+                        showFirstLastButtons>
+          </mat-paginator>
+        </div>
+      </mat-card>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="average-rating-section" style="margin-top: 30px;">
+      <mat-card>
+        <h3>Average Ratings by Organizer</h3>
+        <table mat-table [dataSource]="averageRatings" class="mat-elevation-z8" style="width: 300px;">
+          <ng-container matColumnDef="organizer">
+            <th mat-header-cell *matHeaderCellDef>Organizer</th>
+            <td mat-cell *matCellDef="let item">{{ item.organizer }}</td>
+          </ng-container>
+          <ng-container matColumnDef="average_rating">
+            <th mat-header-cell *matHeaderCellDef>Average Rating</th>
+            <td mat-cell *matCellDef="let item">{{ item.average_rating }}</td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="['organizer', 'average_rating']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['organizer', 'average_rating']"></tr>
+        </table>
+      </mat-card>
+    </div>
+  </mat-card>
+  <div class="button-container">
+    <button mat-raised-button color="accent" class="chart-button" routerLink="/average-rating-chart">
+      <mat-icon>insert_chart</mat-icon>
+      View Average Ratings Chart
+    </button>
+  </div>
+</div>

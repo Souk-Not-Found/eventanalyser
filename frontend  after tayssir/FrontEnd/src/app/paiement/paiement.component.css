@@ -1,0 +1,102 @@
+.payment-container {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2eafc 100%);
+  padding: 40px 32px;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18);
+  max-width: 420px;
+  margin: 48px auto;
+  width: 100%;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  border: 1px solid #e3e3e3;
+}
+
+.payment-container h2 {
+  text-align: center;
+  margin-bottom: 28px;
+  color: #22223b;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.card-element {
+  padding: 16px;
+  border: 1.5px solid #bfc9d1;
+  border-radius: 10px;
+  font-size: 17px;
+  background-color: #f9f9fb;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.card-element:focus-within, .card-element:focus {
+  border-color: #5e72e4;
+  box-shadow: 0 0 0 2px #b2bfff44;
+}
+
+.payment-container .btn {
+  background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%) !important;
+  color: #fff !important;
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 19px;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(67, 233, 123, 0.12);
+  transition: background 0.2s, transform 0.1s;
+}
+
+.payment-container .btn:hover, .payment-container .btn:focus {
+  background: linear-gradient(90deg, #38f9d7 0%, #43e97b 100%) !important;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 24px rgba(67, 233, 123, 0.18);
+}
+
+button[routerLink] {
+  margin: 32px 0 0 0;
+  display: inline-block;
+  width: auto;
+  min-width: 160px;
+  max-width: 260px;
+  padding: 11px 22px;
+  background: linear-gradient(90deg, #ffb347 0%, #ff5858 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(255, 184, 71, 0.10);
+  transition: background 0.2s, transform 0.1s;
+  text-align: left;
+}
+
+button[routerLink]:hover, button[routerLink]:focus {
+  background: linear-gradient(90deg, #ff5858 0%, #ffb347 100%);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 24px rgba(255, 88, 88, 0.18);
+  outline: none;
+}
+
+#card-errors {
+  color: #e74c3c;
+  font-size: 15px;
+  margin-top: 10px;
+  text-align: center;
+  min-height: 22px;
+  font-weight: 500;
+}
+
+@media (max-width: 450px) {
+  .payment-container {
+    padding: 18px 6px;
+  }
+  .btn {
+    font-size: 17px;
+    padding: 13px;
+  }
+}
